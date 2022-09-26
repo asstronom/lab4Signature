@@ -36,8 +36,8 @@ func (c PermutationCipher) Encrypt(message []byte) ([]byte, error) {
 
 func (c PermutationCipher) decryptBlock(block []byte) []byte {
 	result := make([]byte, len(block))
-	for i, j := len(block)-1, 0; i >= 0; i-- {
-		result[i] = block[c.key[j]]
+	for i := range block {
+		result[c.key[i]] = block[i]
 	}
 	return result
 }

@@ -45,3 +45,16 @@ func TestEncrypt(t *testing.T) {
 		t.Errorf("error encryption, encryption didn't return error after recieving message with wrong length, %d", len(result))
 	}
 }
+
+func TestDecryptBlock(t *testing.T) {
+	key := []int{4, 0, 2, 1, 3}
+	block := []byte{5, 1, 3, 2, 4}
+	correct := []byte{1, 2, 3, 4, 5}
+	cipher := NewPermutationCipher(key)
+	block = cipher.decryptBlock(block)
+	for i, v := range block {
+		if v != correct[i] {
+			t.Errorf("wrong encryption, %v != %v", block, correct)
+		}
+	}
+}
