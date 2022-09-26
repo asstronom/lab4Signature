@@ -1,5 +1,7 @@
 package permutation
 
+import "fmt"
+
 type PermutationCipher struct {
 	key []int
 }
@@ -16,9 +18,12 @@ func (c PermutationCipher) encryptBlock(block []byte) []byte {
 	return result
 }
 
-func (c PermutationCipher) Encrypt(message []byte) []byte {
+func (c PermutationCipher) Encrypt(message []byte) ([]byte, error) {
 	if len(message) == 0 {
-		return message
+		return message, nil
+	}
+	if len(message)%len(c.key) != 0 {
+		return nil, fmt.Errorf("message len mod key len != 0")
 	}
 	result := make([]byte, 0, len(message))
 	i := 0
@@ -26,5 +31,5 @@ func (c PermutationCipher) Encrypt(message []byte) []byte {
 		result = append(result, c.encryptBlock(message[i*len(c.key):(i+1)*len(c.key)])...)
 	}
 	result = append(result, c.encryptBlock(message[i*len(c.key):])...)
-	return result
+	return result, nil
 }
