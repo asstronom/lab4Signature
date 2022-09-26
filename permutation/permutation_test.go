@@ -17,13 +17,31 @@ func TestEncryptBlock(t *testing.T) {
 
 func TestEncrypt(t *testing.T) {
 	key := []int{4, 0, 2, 1, 3}
-	message := []byte{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17}
-	correct := []byte{5, 1, 3, 1, 4, 10, 6, 8, 7, 9, 15, 11, 13, 12, 14, 16, 17}
+	message := []byte{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20}
+	correct := []byte{5, 1, 3, 2, 4, 10, 6, 8, 7, 9, 15, 11, 13, 12, 14, 20, 16, 18, 17, 19}
 	cipher := NewPermutationCipher(key)
-	result := cipher.Encrypt(message)
+	result, err := cipher.Encrypt(message)
+	if err != nil {
+		t.Errorf("error encrypting %s\n", err)
+	}
 	for i, v := range result {
 		if v != correct[i] {
-			t.Errorf("wrong encryption, %v != %v", result, correct)
+			t.Errorf("wrong encryption, %v != %v\n", result, correct)
 		}
+	}
+
+	message = []byte{}
+	result, err = cipher.Encrypt(message)
+	if err != nil {
+		t.Errorf("error encrypting %s\n", err)
+	}
+	if len(result) != 0 {
+		t.Errorf("error encrypting, encryption returned not empty slice: %v", result)
+	}
+
+	message = []byte{1}
+	result, err = cipher.Encrypt(message)
+	if err == nil {
+		t.Errorf("error encryption, encryption didn't return error after recieving message with wrong length, %d", len(result))
 	}
 }
