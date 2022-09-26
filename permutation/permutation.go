@@ -33,3 +33,11 @@ func (c PermutationCipher) Encrypt(message []byte) ([]byte, error) {
 	result = append(result, c.encryptBlock(message[i*len(c.key):])...)
 	return result, nil
 }
+
+func (c PermutationCipher) decryptBlock(block []byte) []byte {
+	result := make([]byte, len(block))
+	for i, j := len(block)-1, 0; i >= 0; i-- {
+		result[i] = block[c.key[j]]
+	}
+	return result
+}
