@@ -41,3 +41,19 @@ func (c PermutationCipher) decryptBlock(block []byte) []byte {
 	}
 	return result
 }
+
+func (c PermutationCipher) Decrypt(message []byte) ([]byte, error) {
+	if len(message) == 0 {
+		return message, nil
+	}
+	if len(message)%len(c.key) != 0 {
+		return nil, fmt.Errorf("message len mod key len != 0")
+	}
+	result := make([]byte, 0, len(message))
+	i := 0
+	for ; (i+1)*len(c.key) < len(message); i++ {
+		result = append(result, c.decryptBlock(message[i*len(c.key):(i+1)*len(c.key)])...)
+	}
+	result = append(result, c.decryptBlock(message[i*len(c.key):])...)
+	return result, nil
+}
