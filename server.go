@@ -22,7 +22,7 @@ func NewServer() (*Server, error) {
 	return &Server{
 		public:  public,
 		private: private,
-		boot:    make(chan struct{}),
+		boot:    make(chan struct{}, 1),
 	}, nil
 }
 
@@ -41,6 +41,7 @@ func (s *Server) Dial() Connection {
 }
 
 func (s *Server) Boot() error {
+	fmt.Println("server in sleep mode")
 	<-s.boot
 	fmt.Println("server booted")
 	if s.con.Validate() != nil {
