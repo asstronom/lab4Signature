@@ -2,6 +2,12 @@ package main
 
 import "log"
 
+const (
+	v int = 23
+	g int = 92
+)
+
+
 func main() {
 	server, err := NewServer()
 	if err != nil {
