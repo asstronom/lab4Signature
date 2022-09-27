@@ -22,6 +22,7 @@ func NewServer() (*Server, error) {
 	return &Server{
 		public:  public,
 		private: private,
+		boot: make(chan struct{})
 	}, nil
 }
 
@@ -41,10 +42,14 @@ func (s *Server) Dial() Connection {
 
 func (s *Server) Boot() error {
 	<-s.boot
+	fmt.Println("server booted")
+	if s.con.Validate() != nil {
+		return s.con.Validate()
+	}
 	<-s.con.Recieve
 	bytes, err := bson.Marshal(s.public)
 	if err != nil {
-		return fmt.Errorf("error marshaling public key", err)
+		return fmt.Errorf("error marshaling public key %s", err)
 	}
 	s.con.Send <- bytes
 	bytes = <-s.con.Recieve
