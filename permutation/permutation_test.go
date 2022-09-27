@@ -89,3 +89,10 @@ func TestDecrypt(t *testing.T) {
 		t.Errorf("error encryption, encryption didn't return error after recieving message with wrong length, %d", len(result))
 	}
 }
+
+func TestGenKey(t *testing.T) {
+	key := GenKey(10 + (23+92)%7)
+	t.Logf("%v\n", key)
+	key = GenKey(10 + (23+92)%7)
+	t.Logf("%v\n", key)
+}

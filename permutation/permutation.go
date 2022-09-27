@@ -1,9 +1,25 @@
 package permutation
 
-import "fmt"
+import (
+	"crypto/rand"
+	"fmt"
+	"math/big"
+)
 
 type PermutationCipher struct {
 	key []int
+}
+
+func GenKey(size int) []int {
+	key := make([]int, size)
+	for i := range key {
+		key[i] = i
+	}
+	for i := size - 1; i > 0; i-- { // Fisher–Yates shuffle
+		j, _ := rand.Int(rand.Reader, big.NewInt(int64(i)))
+		key[i], key[j.Int64()] = key[j.Int64()], key[i]
+	}
+	return key
 }
 
 func NewPermutationCipher(key []int) *PermutationCipher {
