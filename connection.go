@@ -6,5 +6,5 @@ type Connection struct {
 }
 
 type Connectable interface {
-	SetConnection(con Connection)
+	Dial() Connection
 }

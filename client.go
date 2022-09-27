@@ -9,6 +9,6 @@ func NewClient() *Client {
 	return &client
 }
 
-func (c *Client) SetConnection(con Connection) {
-	c.con = con
+func (client *Client) ConnectTo(c Connectable) {
+	client.con = c.Dial()
 }
