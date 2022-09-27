@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 
+	"github.com/asstronom/lab4Signature/permutation"
 	"github.com/asstronom/rsa/rsa"
 	"go.mongodb.org/mongo-driver/bson"
 )
@@ -32,5 +33,8 @@ func (client *Client) Work() error {
 		return fmt.Errorf("error unmarshaling public key: %s", err)
 	}
 	fmt.Println("client: unmarshaled public key")
+	symetricKey := permutation.GenKey(10 + (v+g)%7)
+	fmt.Printf("client: generated symetric key: %v", symetricKey)
+	
 	return nil
 }
