@@ -8,4 +8,5 @@ func main() {
 		log.Fatalln("error creating server", err)
 	}
 	client := NewClient()
+	client.ConnectTo(server)
 }
