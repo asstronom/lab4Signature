@@ -22,7 +22,7 @@ func NewServer() (*Server, error) {
 	return &Server{
 		public:  public,
 		private: private,
-		boot: make(chan struct{})
+		boot:    make(chan struct{}),
 	}, nil
 }
 
