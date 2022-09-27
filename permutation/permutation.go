@@ -28,8 +28,15 @@ func NewPermutationCipher(key []int) *PermutationCipher {
 
 func (c PermutationCipher) encryptBlock(block []byte) []byte {
 	result := make([]byte, len(block))
-	for i := range block {
-		result[i] = block[c.key[i]]
+	j := -1
+	for i := 0; i < len(block); i++ {
+		j++
+		if c.key[j] > len(block)-1 {
+			i--
+			continue
+		} else {
+			result[i] = block[c.key[j]]
+		}
 	}
 	return result
 }
@@ -52,8 +59,15 @@ func (c PermutationCipher) Encrypt(message []byte) ([]byte, error) {
 
 func (c PermutationCipher) decryptBlock(block []byte) []byte {
 	result := make([]byte, len(block))
-	for i := range block {
-		result[c.key[i]] = block[i]
+	j := -1
+	for i := 0; i < len(block); i++ {
+		j++
+		if c.key[j] > len(block)-1 {
+			i--
+			continue
+		} else {
+			result[c.key[i]] = block[i]
+		}
 	}
 	return result
 }
