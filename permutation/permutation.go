@@ -2,7 +2,6 @@ package permutation
 
 import (
 	"crypto/rand"
-	"fmt"
 	"math/big"
 )
 
@@ -66,7 +65,7 @@ func (c PermutationCipher) decryptBlock(block []byte) []byte {
 			i--
 			continue
 		} else {
-			result[c.key[i]] = block[i]
+			result[c.key[j]] = block[i]
 		}
 	}
 	return result
