@@ -1,13 +1,17 @@
 package main
 
 import (
+	"fmt"
+
 	"github.com/asstronom/rsa/rsa"
+	"go.mongodb.org/mongo-driver/bson"
 )
 
 type Server struct {
 	con     Connection
 	public  rsa.PublicKey
 	private rsa.PrivateKey
+	boot    chan struct{}
 }
 
 func NewServer() (*Server, error) {
@@ -28,8 +32,24 @@ func (s *Server) Dial() Connection {
 		Recieve: recieve,
 		Send:    send,
 	}
+	s.boot <- struct{}{}
 	return Connection{
 		Recieve: send,
 		Send:    recieve,
 	}
+}
+
+func (s *Server) Boot() error {
+	<-s.boot
+	<-s.con.Recieve
+	bytes, err := bson.Marshal(s.public)
+	if err != nil {
+		return fmt.Errorf("error marshaling public key", err)
+	}
+	s.con.Send <- bytes
+	bytes = <-s.con.Recieve
+	if bytes == nil {
+		return fmt.Errorf("error, recieved nil")
+	}
+	return nil
 }
