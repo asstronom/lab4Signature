@@ -1,14 +1,10 @@
 package main
 
 type Client struct {
-	Rec  chan []byte
-	Send chan []byte
+	con Connection
 }
 
 func NewClient() *Client {
-	client := Client{
-		Rec:  make(chan []byte),
-		Send: make(chan []byte),
-	}
+	client := Client{}
 	return &client
 }
