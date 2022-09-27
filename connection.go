@@ -1,6 +1,10 @@
 package main
 
 type Connection struct {
-	Recieve []byte
-	Send    []byte
+	Recieve <-chan []byte
+	Send    chan<- []byte
+}
+
+type Connectable interface {
+	SetConnection(con Connection)
 }
