@@ -45,9 +45,9 @@ func (c PermutationCipher) Encrypt(message []byte) ([]byte, error) {
 	if len(message) == 0 {
 		return message, nil
 	}
-	if len(message)%len(c.key) != 0 {
-		return nil, fmt.Errorf("message len mod key len != 0")
-	}
+	// if len(message)%len(c.key) != 0 {
+	// 	return nil, fmt.Errorf("message len mod key len != 0")
+	// }
 	result := make([]byte, 0, len(message))
 	i := 0
 	for ; (i+1)*len(c.key) < len(message); i++ {
@@ -76,9 +76,9 @@ func (c PermutationCipher) Decrypt(message []byte) ([]byte, error) {
 	if len(message) == 0 {
 		return message, nil
 	}
-	if len(message)%len(c.key) != 0 {
-		return nil, fmt.Errorf("message len mod key len != 0")
-	}
+	// if len(message)%len(c.key) != 0 {
+	// 	return nil, fmt.Errorf("message len mod key len != 0")
+	// }
 	result := make([]byte, 0, len(message))
 	i := 0
 	for ; (i+1)*len(c.key) < len(message); i++ {
