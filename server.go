@@ -1,7 +1,24 @@
 package main
 
+import (
+	"github.com/asstronom/rsa/rsa"
+)
+
 type Server struct {
-	con Connection
+	con     Connection
+	public  rsa.PublicKey
+	private rsa.PrivateKey
+}
+
+func NewServer() (*Server, error) {
+	public, private, err := rsa.GenKeys()
+	if err != nil {
+		return nil, err
+	}
+	return &Server{
+		public:  public,
+		private: private,
+	}, nil
 }
 
 func (s *Server) Dial() Connection {
