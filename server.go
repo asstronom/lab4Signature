@@ -41,9 +41,9 @@ func (s *Server) Dial() Connection {
 }
 
 func (s *Server) Boot() error {
-	fmt.Println("server in sleep mode")
+	fmt.Println("server: in sleep mode")
 	<-s.boot
-	fmt.Println("server booted")
+	fmt.Println("server: booted")
 	if s.con.Validate() != nil {
 		return s.con.Validate()
 	}

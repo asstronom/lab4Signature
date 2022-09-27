@@ -1,6 +1,7 @@
 package main
 
 import (
+	"crypto/sha1"
 	"fmt"
 
 	"github.com/asstronom/lab4Signature/permutation"
@@ -33,8 +34,13 @@ func (client *Client) Work() error {
 		return fmt.Errorf("error unmarshaling public key: %s", err)
 	}
 	fmt.Println("client: unmarshaled public key")
-	symetricKey := permutation.GenKey(10 + (v+g)%7)
-	fmt.Printf("client: generated symetric key: %v", symetricKey)
-	
+	symetricKey := permutation.GenKey(keyLen)
+	fmt.Printf("client: generated symetric key: %v\n", symetricKey)
+	hash := make([]byte, 0)
+	hasher := sha1.New()
+	hasher.Write([]byte(message))
+	hash = hasher.Sum(hash)
+	fmt.Printf("client: hashed message\nhash: %v\n", hash)
+
 	return nil
 }

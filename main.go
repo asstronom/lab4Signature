@@ -5,6 +5,7 @@ import "log"
 const (
 	v       int    = 23
 	g       int    = 92
+	keyLen         = 10 + (v+g)%7
 	message string = `At an abandoned hotel, a police squad corners Trinity, who overpowers them with superhuman abilities. She flees, pursued by the police and a group of suited Agents capable of similar superhuman feats. She answers a ringing public telephone and vanishes.
 
 	Computer programmer Thomas Anderson, known by his hacking alias "Neo", is puzzled by repeated online encounters with the phrase "the Matrix". Trinity contacts him and tells him a man named Morpheus has the answers Neo seeks. A team of Agents and police, led by Agent Smith, arrives at Neo's workplace in search of him. Though Morpheus attempts to guide Neo to safety, he surrenders rather than risk a dangerous escape via a scaffold. The Agents attempt to bribe Neo into helping them locate Morpheus, who they claim is a terrorist (and the most dangerous man alive), by offering to erase his criminal record. When he refuses to cooperate, they fuse his mouth shut, pin him down, and implant a robotic "bug" in his stomach. Neo wakes up from what he believes to be a nightmare. Soon after, Neo is taken by Trinity to meet Morpheus, and she removes the bug from him, indicating that the "nightmare" he experienced was apparently real.
