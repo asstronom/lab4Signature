@@ -1,9 +1,24 @@
 package permutation
 
-import "fmt"
+import (
+	"crypto/rand"
+	"math/big"
+)
 
 type PermutationCipher struct {
 	key []int
+}
+
+func GenKey(size int) []int {
+	key := make([]int, size)
+	for i := range key {
+		key[i] = i
+	}
+	for i := size - 1; i > 0; i-- { // Fisher–Yates shuffle
+		j, _ := rand.Int(rand.Reader, big.NewInt(int64(i)))
+		key[i], key[j.Int64()] = key[j.Int64()], key[i]
+	}
+	return key
 }
 
 func NewPermutationCipher(key []int) *PermutationCipher {
@@ -12,8 +27,15 @@ func NewPermutationCipher(key []int) *PermutationCipher {
 
 func (c PermutationCipher) encryptBlock(block []byte) []byte {
 	result := make([]byte, len(block))
-	for i := range block {
-		result[i] = block[c.key[i]]
+	j := -1
+	for i := 0; i < len(block); i++ {
+		j++
+		if c.key[j] > len(block)-1 {
+			i--
+			continue
+		} else {
+			result[i] = block[c.key[j]]
+		}
 	}
 	return result
 }
@@ -22,9 +44,9 @@ func (c PermutationCipher) Encrypt(message []byte) ([]byte, error) {
 	if len(message) == 0 {
 		return message, nil
 	}
-	if len(message)%len(c.key) != 0 {
-		return nil, fmt.Errorf("message len mod key len != 0")
-	}
+	// if len(message)%len(c.key) != 0 {
+	// 	return nil, fmt.Errorf("message len mod key len != 0")
+	// }
 	result := make([]byte, 0, len(message))
 	i := 0
 	for ; (i+1)*len(c.key) < len(message); i++ {
@@ -36,8 +58,15 @@ func (c PermutationCipher) Encrypt(message []byte) ([]byte, error) {
 
 func (c PermutationCipher) decryptBlock(block []byte) []byte {
 	result := make([]byte, len(block))
-	for i := range block {
-		result[c.key[i]] = block[i]
+	j := -1
+	for i := 0; i < len(block); i++ {
+		j++
+		if c.key[j] > len(block)-1 {
+			i--
+			continue
+		} else {
+			result[c.key[j]] = block[i]
+		}
 	}
 	return result
 }
@@ -46,9 +75,9 @@ func (c PermutationCipher) Decrypt(message []byte) ([]byte, error) {
 	if len(message) == 0 {
 		return message, nil
 	}
-	if len(message)%len(c.key) != 0 {
-		return nil, fmt.Errorf("message len mod key len != 0")
-	}
+	// if len(message)%len(c.key) != 0 {
+	// 	return nil, fmt.Errorf("message len mod key len != 0")
+	// }
 	result := make([]byte, 0, len(message))
 	i := 0
 	for ; (i+1)*len(c.key) < len(message); i++ {
