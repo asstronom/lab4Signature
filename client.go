@@ -23,10 +23,13 @@ func (client *Client) ConnectTo(c Connectable) {
 }
 
 func (client *Client) Work() error {
+	//validate connection
 	if client.con.Validate() != nil {
 		return client.con.Validate()
 	}
+	//send request to server
 	client.con.Send <- []byte{}
+	//recieve public key from server
 	bytes := <-client.con.Recieve
 	public := rsa.PublicKey{}
 	err := bson.Unmarshal(bytes, &public)
@@ -34,14 +37,17 @@ func (client *Client) Work() error {
 		return fmt.Errorf("error unmarshaling public key: %s", err)
 	}
 	fmt.Println("client: unmarshaled public key")
+	//hash message
 	hash := make([]byte, 0)
 	hasher := sha1.New()
 	hasher.Write([]byte(message))
 	hash = hasher.Sum(hash)
 	fmt.Printf("client: hashed message\nhash: %v\n", hash)
+	//generate symetric key
 	symetricKey := permutation.GenKey(keyLen)
 	fmt.Printf("client: generated symetric key: %v\n", symetricKey)
 	symetricCipher := permutation.NewPermutationCipher(symetricKey)
+	//encrypt hash
 	encryptedHash, err := symetricCipher.Encrypt(hash)
 	if err != nil {
 		return err
@@ -51,14 +57,15 @@ func (client *Client) Work() error {
 	for i := range symetricKey {
 		symetricKeyBytes = append(symetricKeyBytes, byte(symetricKey[i]))
 	}
-	//fmt.Printf("symetricKeyBytes (len: %d): %v\n", len(symetricKeyBytes), symetricKeyBytes)
+	//encrypt symetyricKey with rsa public key
 	encryptedSymetricKey := public.Encrypt(symetricKeyBytes)
-	//fmt.Printf("encrypted symetricKeyBytes (len: %d): %v\n", len(encryptedSymetricKey), encryptedSymetricKey)
 	fmt.Printf("client: encrypted symetric key with public key\n")
+	//pack everything
 	ds := DigitalSignature{
 		SymetricKey: encryptedSymetricKey,
 		MessageHash: encryptedHash,
 	}
+	//if isComprimised, set message to compromised message. server should notice that message is compromised
 	if isComprimised {
 		ds.Message = []byte(comprimisedMessage)
 	} else {
@@ -69,6 +76,7 @@ func (client *Client) Work() error {
 		return err
 	}
 	fmt.Printf("client: sent digital signature\n")
+	//get response from server. If it is != 0 -> server noticed that message was compromised
 	client.con.Send <- bytes
 	if len(<-client.con.Recieve) != 0 {
 		return fmt.Errorf("server didn't confirm my message :(")

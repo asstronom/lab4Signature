@@ -49,21 +49,28 @@ var (
 func main() {
 	flag.BoolVar(&isComprimised, "compromised", false, "whether to compromise string or not")
 	flag.Parse()
+
+	//create server
 	server, err := NewServer()
 	if err != nil {
 		log.Fatalln("error creating server", err)
 	}
+	//create client
 	client := NewClient()
+	//connect client to server
 	client.ConnectTo(server)
+	//async launch server
 	go func() {
 		err := server.Boot()
 		if err != nil {
 			log.Fatalln(err)
 		}
 	}()
+	//start client
 	err = client.Work()
 	if err != nil {
 		log.Fatalln(err)
 	}
+	//if client finished sending document to server successfully print message
 	fmt.Println("success!")
 }

@@ -9,11 +9,15 @@ type PermutationCipher struct {
 	key []int
 }
 
+
+
 func GenKey(size int) []int {
 	key := make([]int, size)
+	//generates key by creating array of given size with this elements [0, 1, 2..., size-1]
 	for i := range key {
 		key[i] = i
 	}
+	//shuffles key
 	for i := size - 1; i > 0; i-- { // Fisher–Yates shuffle
 		j, _ := rand.Int(rand.Reader, big.NewInt(int64(i)))
 		key[i], key[j.Int64()] = key[j.Int64()], key[i]
@@ -25,6 +29,7 @@ func NewPermutationCipher(key []int) *PermutationCipher {
 	return &PermutationCipher{key: key}
 }
 
+//encrypts one block
 func (c PermutationCipher) encryptBlock(block []byte) []byte {
 	result := make([]byte, len(block))
 	j := -1
@@ -40,6 +45,7 @@ func (c PermutationCipher) encryptBlock(block []byte) []byte {
 	return result
 }
 
+//encrypts full message
 func (c PermutationCipher) Encrypt(message []byte) ([]byte, error) {
 	if len(message) == 0 {
 		return message, nil
